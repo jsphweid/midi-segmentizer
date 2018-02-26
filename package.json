@@ -1,0 +1,44 @@
+{
+	"name": "midi-segmentizer",
+	"version": "1.0.0",
+	"description": "break a midi file into monophonic segments",
+	"main": "main.js",
+	"scripts": {
+		"start": "webpack --progress --colors --watch",
+		"build": "webpack --progress --colors",
+		"test": "jest -t",
+		"test:dev": "jest --watchAll -t",
+		"test:coverage": "jest -t --coverage"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jsphweid/midi-segmentizer.git"
+	},
+	"author": "Joseph Weidinger",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/jsphweid/midi-segmentizer/issues"
+	},
+	"jest": {
+		"setupFiles": [],
+		"moduleFileExtensions": ["ts", "js"],
+		"transform": {
+			"\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
+		},
+		"testRegex": "/src/.*\\.test.(ts|js)$"
+	},
+	"homepage": "https://github.com/jsphweid/midi-segmentizer#readme",
+	"devDependencies": {
+		"@types/jest": "^22.1.3",
+		"@types/node": "^9.4.6",
+		"@types/webpack": "^3.8.8",
+		"awesome-typescript-loader": "^3.5.0",
+		"clean-webpack-plugin": "^0.1.18",
+		"jest": "^22.4.2",
+		"midiconvert": "^0.4.3",
+		"ts-jest": "^22.4.0",
+		"typescript": "^2.7.2",
+		"webpack": "^3.11.0",
+		"webpack-cli": "^2.0.9"
+	}
+}
