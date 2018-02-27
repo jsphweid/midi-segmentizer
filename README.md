@@ -2,9 +2,19 @@
 
 break a midi file into monophonic segments
 
-# todo
+## develop
 
-have some dev process that allows you to see the chunks...
+`npm run start` to see if your code compiles. You can also go to localhost:8080 to see what the split will look like
+
+`npm run test` - run tests once
+`npm run test:dev` - run tests continuously
+`npm run test:coverage` - see how well the tests cover the essential code
+
+# MVP
+
+* Monophonic tracks only
+
+# todo
 
 idea:
 
