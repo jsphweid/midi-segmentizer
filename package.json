@@ -21,7 +21,10 @@
 	},
 	"jest": {
 		"setupFiles": [],
-		"moduleFileExtensions": ["ts", "js"],
+		"moduleFileExtensions": [
+			"ts",
+			"js"
+		],
 		"transform": {
 			"\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
 		},
