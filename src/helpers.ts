@@ -6,14 +6,25 @@ export const loadMidi = (fullPath: string): MIDI => {
 	return parseMidi(midiFile)
 }
 
-export const getValidTracks = (midi: MIDI) =>
-	midi.tracks.filter((track: Track) => track.notes.length > 0 && track.channelNumber >= 0)
+export const getValidTracks = (midi: MIDI) => {
+	return midi.tracks.filter((track: Track) => track.notes.length > 0 && track.channelNumber >= 0)
+}
 
-export const noteSequenceIsPolyphonic = (notes: Note[]): boolean => {
-	for (let i = 1; i < notes.length; i++) {
-		const previousNote = notes[i - 1]
-		const diff = notes[i].time - (previousNote.duration + previousNote.time)
-		if (diff < 0) return true
+export const getSimplePartitioningArray = (arr: number[]): number[] => {
+	return arr
+		.map((num: number, index: number) => (index === 0 || num !== 0 ? index : 0))
+		.filter((num: number, index: number) => index === 0 || num !== 0)
+}
+
+export const getPartitioningArrayWithMax = (arr: number[], max: number): number[] => {
+	const dividingIndicies: number[] = [0]
+	let sum = 0
+	for (let i = 0; i < arr.length; i++) {
+		sum += arr[i]
+		if (sum > max) {
+			dividingIndicies.push(i)
+			sum = arr[i]
+		}
 	}
-	return false
+	return dividingIndicies
 }

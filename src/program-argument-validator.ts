@@ -1,7 +1,8 @@
 import { parse as parseMidi, MIDI, Track, Note } from 'midiconvert'
 import { readFileSync, existsSync } from 'fs'
 import { ParsedPath, parse, resolve } from 'path'
-import { loadMidi, getValidTracks, noteSequenceIsPolyphonic } from './helpers'
+import { loadMidi, getValidTracks } from './helpers'
+import NotesProcessor from './notes-processor'
 
 export default class ArgumentValidator {
 	public static hasValidArguments(argumentList: string[]): boolean {
@@ -49,12 +50,17 @@ export default class ArgumentValidator {
 		}
 	}
 
+	private static noteSequenceIsPolyphonic = (notes: Note[]): boolean => {
+		const timeDiffs = NotesProcessor.getTimeDifferenceArray(notes)
+		return timeDiffs.filter((num: number) => num < 0).length > 0
+	}
+
 	private static isPolyphonicMidiFile(path: string): boolean {
 		const midi: MIDI = loadMidi(path)
 		return (
 			getValidTracks(midi)
 				.map((track: Track) => track.notes)
-				.map((notes: Note[]) => noteSequenceIsPolyphonic(notes))
+				.map((notes: Note[]) => ArgumentValidator.noteSequenceIsPolyphonic(notes))
 				.filter((trackIsPolyphonic: boolean) => trackIsPolyphonic).length > 0
 		)
 	}

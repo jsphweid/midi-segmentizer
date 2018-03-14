@@ -1,1 +1,1 @@
-export const get
+const a = 5
