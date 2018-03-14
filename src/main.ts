@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import { MIDI, Track, Note } from 'midiconvert'
 import { loadMidi, getValidTracks } from './helpers'
 import NotesProcessor from './notes-processor'
+import { MAX_BREATH_SECONDS } from './constants'
 
 const hasValidArguments = ArgumentValidator.hasValidArguments(process.argv)
 if (!hasValidArguments) process.exit(1)
