@@ -16,9 +16,7 @@ const validTracks: Track[] = getValidTracks(midi)
 
 const processTrack = (track: Track): void => {
 	const notesGroupedOnRests = NotesProcessor.groupNotesOnRests(track.notes)
-	const finalDivisons = NotesProcessor.subdivideUnderMaxBreath(MAX_BREATH_SECONDS)
-	// divide on rests
-	// subdivide further to get under minimum
+	const finalDivisons = NotesProcessor.subdivideUnderMaxBreath(notesGroupedOnRests, MAX_BREATH_SECONDS)
 }
 
 validTracks.forEach((track: Track) => processTrack(track))

@@ -17,14 +17,24 @@ export const getSimplePartitioningArray = (arr: number[]): number[] => {
 }
 
 export const getPartitioningArrayWithMax = (arr: number[], max: number): number[] => {
-	const dividingIndicies: number[] = [0]
+	const dividingIndicies: number[] = []
 	let sum = 0
 	for (let i = 0; i < arr.length; i++) {
 		sum += arr[i]
-		if (sum > max) {
+		if (sum > max || i === 0) {
 			dividingIndicies.push(i)
 			sum = arr[i]
 		}
 	}
 	return dividingIndicies
+}
+
+export const sliceAndDice = <T>(arr: T[], indicesToSliceAt: number[]): T[][] => {
+	let ret: T[][] = []
+	for (let i = 0; i < indicesToSliceAt.length; i++) {
+		const partitionIndex: number = indicesToSliceAt[i]
+		const nextPartitionIndex: number = indicesToSliceAt[i + 1]
+		ret.push(arr.slice(partitionIndex, nextPartitionIndex))
+	}
+	return ret
 }

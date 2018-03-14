@@ -11,6 +11,11 @@ describe('program-argument-validator', () => {
 		expect(ArgumentValidator.hasValidArguments(defaultArgList)).toBe(true)
 	})
 
+	it('should have the right number of arguments', () => {
+		const argList = defaultArgList.slice(1, defaultArgList.length)
+		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+	})
+
 	it('if third arg is midi file but junk, it fails', () => {
 		const argList = defaultArgList.slice()
 		argList[2] = './test-midi-files/corruptMidi.mid'

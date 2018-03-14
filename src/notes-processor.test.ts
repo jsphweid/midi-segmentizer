@@ -73,4 +73,57 @@ describe('notes-processor', () => {
 			])
 		})
 	})
+
+	describe('subdivideUnderMaxBreath', () => {
+		it('should partition notes further to almost nothing when max is so low', () => {
+			const groupsOfNotes = [
+				[{ time: 1, duration: 2 }, { time: 3, duration: 0.5 }],
+				[{ time: 4, duration: 5 }, { time: 9, duration: 1 }]
+			] as Note[][]
+			expect(NotesProcessor.subdivideUnderMaxBreath(groupsOfNotes, 2)).toEqual([
+				[{ time: 1, duration: 2 }],
+				[{ time: 3, duration: 0.5 }],
+				[{ time: 4, duration: 5 }],
+				[{ time: 9, duration: 1 }]
+			])
+		})
+
+		it('should partition just a few places when max is higher', () => {
+			const groupsOfNotes = [
+				[{ time: 1, duration: 2 }, { time: 3, duration: 0.5 }],
+				[{ time: 4, duration: 5 }, { time: 9, duration: 1 }]
+			] as Note[][]
+			expect(NotesProcessor.subdivideUnderMaxBreath(groupsOfNotes, 4)).toEqual([
+				[{ time: 1, duration: 2 }, { time: 3, duration: 0.5 }],
+				[{ time: 4, duration: 5 }],
+				[{ time: 9, duration: 1 }]
+			])
+		})
+
+		it('should partition correctly when there are lots of small notes', () => {
+			const notes = [
+				[
+					{ time: 1, duration: 1 },
+					{ time: 2, duration: 1 },
+					{ time: 3, duration: 1 },
+					{ time: 4, duration: 1 }
+				],
+				[
+					{ time: 6, duration: 0.5 },
+					{ time: 6.5, duration: 0.5 },
+					{ time: 7, duration: 0.5 },
+					{ time: 7.5, duration: 1 },
+					{ time: 8.5, duration: 1 },
+					{ time: 9.5, duration: 0.5 }
+				]
+			] as Note[][]
+			expect(NotesProcessor.subdivideUnderMaxBreath(notes, 2)).toEqual([
+				[{ time: 1, duration: 1 }, { time: 2, duration: 1 }],
+				[{ time: 3, duration: 1 }, { time: 4, duration: 1 }],
+				[{ time: 6, duration: 0.5 }, { time: 6.5, duration: 0.5 }, { time: 7, duration: 0.5 }],
+				[{ time: 7.5, duration: 1 }, { time: 8.5, duration: 1 }],
+				[{ time: 9.5, duration: 0.5 }]
+			])
+		})
+	})
 })
