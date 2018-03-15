@@ -12,12 +12,10 @@ const midi: MIDI = loadMidi(process.argv[2])
 const bpm: number = midi.header.bpm
 const validTracks: Track[] = getValidTracks(midi)
 
-// go through each of those sections and determine if they need to be longer or shorter
-// strategically group things together or not depending
-
 const processTrack = (track: Track): void => {
 	const notesGroupedOnRests = NotesProcessor.groupNotesOnRests(track.notes)
 	const finalDivisons = NotesProcessor.subdivideUnderMaxBreath(notesGroupedOnRests, MAX_BREATH_SECONDS)
+	console.log('finalDivisons', finalDivisons)
 }
 
 validTracks.forEach((track: Track) => processTrack(track))
