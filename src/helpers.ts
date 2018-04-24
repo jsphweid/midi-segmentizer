@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import { MIDI, parse as parseMidi, Track, Note } from 'midiconvert'
+import { MIDI, parse as parseMidi, Track } from 'midiconvert'
 
 export const loadMidi = (fullPath: string): MIDI => {
 	const midiFile: any = readFileSync(fullPath, 'binary')

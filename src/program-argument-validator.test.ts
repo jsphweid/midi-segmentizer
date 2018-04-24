@@ -1,6 +1,6 @@
 import ArgumentValidator from './program-argument-validator'
 
-const defaultArgList: string[] = ['nodepath', 'scriptpath', './test-midi-files/bwv772.mid']
+const defaultArgList: string[] = ['nodepath', 'scriptpath', './test-midi-files/bwv772.mid', './']
 
 describe('program-argument-validator', () => {
 	beforeAll(() => {

@@ -1,5 +1,5 @@
-import { parse as parseMidi, MIDI, Track, Note } from 'midiconvert'
-import { readFileSync, existsSync } from 'fs'
+import { MIDI, Track, Note } from 'midiconvert'
+import { existsSync } from 'fs'
 import { ParsedPath, parse, resolve } from 'path'
 import { loadMidi, getValidTracks } from './helpers'
 import NotesProcessor from './notes-processor'
@@ -16,10 +16,11 @@ export default class ArgumentValidator {
 	}
 
 	private static numberOfArgumentsIsCorrect(numberOfArgs: number): boolean {
-		if (numberOfArgs !== 3) {
+		if (numberOfArgs !== 4) {
 			console.error(`
-                This program requires 1 argument:
-                    1: path to midi file
+                This program requires 2 arguments:
+					1: path to midi file
+					2: path of desired output file
 			`)
 			return false
 		}
@@ -57,11 +58,17 @@ export default class ArgumentValidator {
 
 	private static isPolyphonicMidiFile(path: string): boolean {
 		const midi: MIDI = loadMidi(path)
-		return (
+		const containsPolyphonicTrack =
 			getValidTracks(midi)
 				.map((track: Track) => track.notes)
 				.map((notes: Note[]) => ArgumentValidator.noteSequenceIsPolyphonic(notes))
 				.filter((trackIsPolyphonic: boolean) => trackIsPolyphonic).length > 0
-		)
+		if (containsPolyphonicTrack) {
+			console.error(`
+				Midi file contains polyphony. This isn't supported yet. Please make sure your midi file contains no tracks that have overlapping notes.
+			`)
+			return true
+		}
+		return false
 	}
 }
