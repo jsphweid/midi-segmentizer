@@ -1,6 +1,11 @@
 import NotesProcessor from './notes-processor'
 import { Note } from 'midiconvert'
-import { getSimplePartitioningArray, getPartitioningArrayWithMax, sliceAndDice } from './helpers'
+import {
+	getSimplePartitioningArray,
+	getPartitioningArrayWithMax,
+	sliceAndDice,
+	determineMeasureLength
+} from './helpers'
 
 describe('helpers', () => {
 	describe('sliceAndDice', () => {
@@ -91,6 +96,28 @@ describe('helpers', () => {
 		it('should divide appropriately when faced with a large starting number', () => {
 			const arr = [5, 1]
 			expect(getPartitioningArrayWithMax(arr, 2)).toEqual([0, 1])
+		})
+	})
+
+	describe('determineMeasureLength', () => {
+		it('should determine the correct bpm with a basic 4/4 measure at 60bpm', () => {
+			expect(determineMeasureLength(60, [4, 4])).toEqual(4)
+		})
+
+		it('should determine the correct bpm with a basic 3/4 measure at 60bpm', () => {
+			expect(determineMeasureLength(60, [3, 4])).toEqual(3)
+		})
+
+		it('should determine the correct bpm with a basic 6/4 measure at 60bpm', () => {
+			expect(determineMeasureLength(60, [6, 4])).toEqual(6)
+		})
+
+		it('should determine the correct bpm with a basic 4/4 measure at 120bpm', () => {
+			expect(determineMeasureLength(120, [4, 4])).toEqual(2)
+		})
+
+		it('should determine the correct bpm with a basic 3/4 measure at 120bpm', () => {
+			expect(determineMeasureLength(120, [3, 4])).toEqual(1.5)
 		})
 	})
 })

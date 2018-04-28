@@ -38,3 +38,8 @@ export const sliceAndDice = <T>(arr: T[], indicesToSliceAt: number[]): T[][] => 
 	}
 	return ret
 }
+
+export const determineMeasureLength = (bpm: number, timeSignature: number[]): number => {
+	const secondsPerBeat = 1 / (bpm / 60)
+	return timeSignature[0] * secondsPerBeat
+}
