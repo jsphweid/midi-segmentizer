@@ -11,7 +11,8 @@ export default class ArgumentValidator {
 			ArgumentValidator.numberOfArgumentsIsCorrect(argumentList.length) &&
 			ArgumentValidator.isMidiFile(resolve(midiPath)) &&
 			ArgumentValidator.isValidMidiFile(resolve(midiPath)) &&
-			!ArgumentValidator.isPolyphonicMidiFile(resolve(midiPath))
+			!ArgumentValidator.isPolyphonicMidiFile(resolve(midiPath)) &&
+			ArgumentValidator.isSimpleTimeSignature(resolve(midiPath))
 		)
 	}
 
@@ -70,5 +71,10 @@ export default class ArgumentValidator {
 			return true
 		}
 		return false
+	}
+
+	private static isSimpleTimeSignature(path: string): boolean {
+		const midi: MIDI = loadMidi(path)
+		return midi.header.timeSignature && midi.header.timeSignature[1] === 4
 	}
 }

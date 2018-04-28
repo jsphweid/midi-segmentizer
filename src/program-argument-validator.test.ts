@@ -33,4 +33,10 @@ describe('program-argument-validator', () => {
 		argList[2] = './test-midi-files/bwv772-not-monophonic.mid'
 		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
 	})
+
+	it('should fail if not a basic time signature', () => {
+		const argList = defaultArgList.slice()
+		argList[2] = './test-midi-files/7-8time.mid'
+		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+	})
 })
