@@ -23,7 +23,7 @@ if (sourcePathObj.ext !== '.mid' || !existsSync(midiPath)) {
 }
 
 // extract basic info
-const midiFile: string = readFileSync(midiPath, 'binary')
+const midiFile: string = readFileSync(midiPath, 'base64')
 
 // validate arguments
 const hasValidArguments = ArgumentValidator.hasValidArguments(midiFile)

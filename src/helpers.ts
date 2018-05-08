@@ -42,8 +42,11 @@ export const determineMeasureLength = (bpm: number, timeSignature: number[]): nu
 	return timeSignature[0] * secondsPerBeat
 }
 
+export const base64ToBinary = (base64String: string): ArrayBuffer =>
+	Buffer.from(base64String, 'base64').toString('binary') as any
+
 export const processMidiFile = (midiFile: string): SegmentInfoType[] => {
-	const midi: MIDI = parseMidi(midiFile)
+	const midi: MIDI = parseMidi(base64ToBinary(midiFile))
 
 	const { timeSignature, bpm } = midi.header
 	const tracks: Track[] = getValidTracks(midi)

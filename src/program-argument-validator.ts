@@ -1,5 +1,5 @@
 import { MIDI, Track, Note, parse as parseMidi } from 'midiconvert'
-import { getValidTracks } from './helpers'
+import { getValidTracks, base64ToBinary } from './helpers'
 import NotesProcessor from './notes-processor'
 
 export default class ArgumentValidator {
@@ -13,9 +13,12 @@ export default class ArgumentValidator {
 
 	private static isValidMidiFile(midiFileBuffer: string): boolean {
 		try {
-			parseMidi(midiFileBuffer)
+			const aaa = base64ToBinary(midiFileBuffer)
+			// console.log('aaa', aaa)
+			parseMidi(base64ToBinary(midiFileBuffer))
 			return true
 		} catch (e) {
+			console.log('e', e)
 			console.error(`
 				Midi file provided is not valid.
 				${e}
@@ -30,7 +33,7 @@ export default class ArgumentValidator {
 	}
 
 	private static isPolyphonicMidiFile(midiFileBuffer: string): boolean {
-		const midi: MIDI = parseMidi(midiFileBuffer)
+		const midi: MIDI = parseMidi(base64ToBinary(midiFileBuffer))
 		const containsPolyphonicTrack =
 			getValidTracks(midi)
 				.map((track: Track) => track.notes)
@@ -46,7 +49,7 @@ export default class ArgumentValidator {
 	}
 
 	private static isSimpleTimeSignature(midiFileBuffer: string): boolean {
-		const midi: MIDI = parseMidi(midiFileBuffer)
+		const midi: MIDI = parseMidi(base64ToBinary(midiFileBuffer))
 		return midi.header.timeSignature && midi.header.timeSignature[1] === 4
 	}
 }
