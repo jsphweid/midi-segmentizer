@@ -13,12 +13,9 @@ export default class ArgumentValidator {
 
 	private static isValidMidiFile(midiFileBuffer: string): boolean {
 		try {
-			const aaa = base64ToBinary(midiFileBuffer)
-			// console.log('aaa', aaa)
 			parseMidi(base64ToBinary(midiFileBuffer))
 			return true
 		} catch (e) {
-			console.log('e', e)
 			console.error(`
 				Midi file provided is not valid.
 				${e}
