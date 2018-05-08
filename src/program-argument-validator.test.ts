@@ -1,6 +1,5 @@
 import ArgumentValidator from './program-argument-validator'
-
-const defaultArgList: string[] = ['nodepath', 'scriptpath', './test-midi-files/bwv772.mid', './']
+import { readFileSync } from 'fs'
 
 describe('program-argument-validator', () => {
 	beforeAll(() => {
@@ -8,35 +7,27 @@ describe('program-argument-validator', () => {
 	})
 
 	it('happy path is good', () => {
-		expect(ArgumentValidator.hasValidArguments(defaultArgList)).toBe(true)
-	})
-
-	it('should have the right number of arguments', () => {
-		const argList = defaultArgList.slice(1, defaultArgList.length)
-		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+		const midiFile = readFileSync('./test-midi-files/bwv772.mid', 'binary')
+		expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(true)
 	})
 
 	it('if third arg is midi file but junk, it fails', () => {
-		const argList = defaultArgList.slice()
-		argList[2] = './test-midi-files/corruptMidi.mid'
-		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+		const midiFile = readFileSync('./test-midi-files/corruptMidi.mid', 'binary')
+		expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(false)
 	})
 
 	it('if third arg is not a valid midi file, it fails', () => {
-		const argList = defaultArgList.slice()
-		argList[2] = 'fakeAF'
-		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+		const midiFile = 'fakeAF'
+		expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(false)
 	})
 
 	it('if third arg is valid midi file but contains polyphony, it should stop', () => {
-		const argList = defaultArgList.slice()
-		argList[2] = './test-midi-files/bwv772-not-monophonic.mid'
-		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+		const midiFile = readFileSync('./test-midi-files/bwv772-not-monophonic.mid', 'binary')
+		expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(false)
 	})
 
 	it('should fail if not a basic time signature', () => {
-		const argList = defaultArgList.slice()
-		argList[2] = './test-midi-files/7-8time.mid'
-		expect(ArgumentValidator.hasValidArguments(argList)).toBe(false)
+		const midiFile = readFileSync('./test-midi-files/7-8time.mid', 'binary')
+		expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(false)
 	})
 })

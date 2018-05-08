@@ -3,7 +3,7 @@ import { MIDI } from 'midiconvert'
 export interface SegmentInfoType {
 	offset: number
 	midiJson: MIDI
-	originalFileName: string
+	midiName: string
 	centerTime: number
 	difficulty: number
 }

@@ -5,12 +5,14 @@ module.exports = {
 	target: 'node',
 
 	entry: {
-		app: './src/main.ts'
+		'midiSegmentizer-commandLine': './src/main-commandLine.ts',
+		'midiSegmentizer-module': './src/main-module.ts'
 	},
 
 	output: {
 		path: path.resolve(__dirname, 'dist'),
-		filename: '[name].js'
+		filename: '[name].js',
+		libraryTarget: 'commonjs'
 	},
 
 	resolve: {

@@ -1,47 +1,19 @@
-import { MIDI, Track, Note } from 'midiconvert'
-import { existsSync } from 'fs'
-import { ParsedPath, parse, resolve } from 'path'
-import { loadMidi, getValidTracks } from './helpers'
+import { MIDI, Track, Note, parse as parseMidi } from 'midiconvert'
+import { getValidTracks } from './helpers'
 import NotesProcessor from './notes-processor'
 
 export default class ArgumentValidator {
-	public static hasValidArguments(argumentList: string[]): boolean {
-		const midiPath: string = argumentList[2]
+	public static hasValidArguments(midiFileBuffer: string): boolean {
 		return (
-			ArgumentValidator.numberOfArgumentsIsCorrect(argumentList.length) &&
-			ArgumentValidator.isMidiFile(resolve(midiPath)) &&
-			ArgumentValidator.isValidMidiFile(resolve(midiPath)) &&
-			!ArgumentValidator.isPolyphonicMidiFile(resolve(midiPath)) &&
-			ArgumentValidator.isSimpleTimeSignature(resolve(midiPath))
+			ArgumentValidator.isValidMidiFile(midiFileBuffer) &&
+			!ArgumentValidator.isPolyphonicMidiFile(midiFileBuffer) &&
+			ArgumentValidator.isSimpleTimeSignature(midiFileBuffer)
 		)
 	}
 
-	private static numberOfArgumentsIsCorrect(numberOfArgs: number): boolean {
-		if (numberOfArgs !== 4) {
-			console.error(`
-                This program requires 2 arguments:
-					1: path to midi file
-					2: path of desired output file
-			`)
-			return false
-		}
-		return true
-	}
-
-	private static isMidiFile(path: string): boolean {
-		const sourcePathObj: ParsedPath = parse(path)
-		if (sourcePathObj.ext !== '.mid' || !existsSync(path)) {
-			console.error(`
-				First argument must be a .mid file that really exists.
-			`)
-			return false
-		}
-		return true
-	}
-
-	private static isValidMidiFile(path: string): boolean {
+	private static isValidMidiFile(midiFileBuffer: string): boolean {
 		try {
-			loadMidi(path)
+			parseMidi(midiFileBuffer)
 			return true
 		} catch (e) {
 			console.error(`
@@ -57,8 +29,8 @@ export default class ArgumentValidator {
 		return timeDiffs.filter((num: number) => num < 0).length > 0
 	}
 
-	private static isPolyphonicMidiFile(path: string): boolean {
-		const midi: MIDI = loadMidi(path)
+	private static isPolyphonicMidiFile(midiFileBuffer: string): boolean {
+		const midi: MIDI = parseMidi(midiFileBuffer)
 		const containsPolyphonicTrack =
 			getValidTracks(midi)
 				.map((track: Track) => track.notes)
@@ -73,8 +45,8 @@ export default class ArgumentValidator {
 		return false
 	}
 
-	private static isSimpleTimeSignature(path: string): boolean {
-		const midi: MIDI = loadMidi(path)
+	private static isSimpleTimeSignature(midiFileBuffer: string): boolean {
+		const midi: MIDI = parseMidi(midiFileBuffer)
 		return midi.header.timeSignature && midi.header.timeSignature[1] === 4
 	}
 }
