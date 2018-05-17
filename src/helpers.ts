@@ -1,8 +1,7 @@
-import { MIDI, parse as parseMidi, Track } from 'midiconvert'
+import { MIDI, parse as parseMidi, Track, Note, create as createMidi } from 'midiconvert'
 import NotesProcessor from './notes-processor'
 import { MAX_BREATH_SECONDS } from './constants'
-import { SegmentInfoType } from './types'
-import { Note, create as createMidi } from 'midiconvert'
+import { SegmentInfoType } from './main-module'
 
 export const getValidTracks = (midi: MIDI) => {
 	return midi.tracks.filter((track: Track) => track.notes.length > 0 && track.channelNumber >= 0)
