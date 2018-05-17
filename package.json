@@ -28,10 +28,7 @@
 	},
 	"jest": {
 		"setupFiles": [],
-		"moduleFileExtensions": [
-			"ts",
-			"js"
-		],
+		"moduleFileExtensions": ["ts", "js"],
 		"transform": {
 			"\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
 		},
@@ -45,10 +42,12 @@
 		"awesome-typescript-loader": "^3.5.0",
 		"clean-webpack-plugin": "^0.1.18",
 		"jest": "^22.4.2",
-		"midiconvert": "file:../MidiConvert/midiconvert-0.4.3.tgz",
 		"ts-jest": "^22.4.0",
 		"typescript": "^2.7.2",
 		"webpack": "^3.11.0",
 		"webpack-cli": "^2.0.9"
+	},
+	"dependencies": {
+		"midiconvert": "github:jsphweid/MidiConvert"
 	}
 }
