@@ -1,6 +1,6 @@
 {
 	"name": "midi-segmentizer",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "break a midi file into monophonic segments",
 	"main": "dist/midiSegmentizer-module.js",
 	"types": "dist/main-module.d.ts",
@@ -28,7 +28,10 @@
 	},
 	"jest": {
 		"setupFiles": [],
-		"moduleFileExtensions": ["ts", "js"],
+		"moduleFileExtensions": [
+			"ts",
+			"js"
+		],
 		"transform": {
 			"\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
 		},
