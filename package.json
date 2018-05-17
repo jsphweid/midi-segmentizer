@@ -2,7 +2,8 @@
 	"name": "midi-segmentizer",
 	"version": "1.0.0",
 	"description": "break a midi file into monophonic segments",
-	"main": "main.js",
+	"main": "dist/midiSegmentizer-module.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"start": "webpack --progress --colors --watch",
 		"build": "webpack --progress --colors",
@@ -21,10 +22,7 @@
 	},
 	"jest": {
 		"setupFiles": [],
-		"moduleFileExtensions": [
-			"ts",
-			"js"
-		],
+		"moduleFileExtensions": ["ts", "js"],
 		"transform": {
 			"\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
 		},

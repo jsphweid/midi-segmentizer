@@ -5,6 +5,8 @@
 		"noUnusedParameters": true,
 		"module": "commonjs",
 		"target": "es6",
+		"declaration": true,
+		"declarationDir": "./dist",
 		"skipLibCheck": true,
 		"typeRoots": ["node_modules/@types", "local-types"]
 	},
