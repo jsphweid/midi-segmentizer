@@ -33,3 +33,8 @@ const segmentInfos = processMidiFile(midiFile)
 const outputFile: string = process.argv[3]
 
 writeFileSync(outputFile, JSON.stringify(segmentInfos))
+
+segmentInfos.forEach((segmentInfo, index) => {
+	if (index === 3) console.log('segmentInfo.midiJson', JSON.stringify(segmentInfo.midiJson))
+	writeFileSync(`output${index}.mid`, segmentInfo.midiJson.encode(), 'binary')
+})
