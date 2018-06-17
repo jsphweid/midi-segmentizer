@@ -1,6 +1,6 @@
 {
 	"name": "midi-segmentizer",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "break a midi file into monophonic segments",
 	"main": "dist/midiSegmentizer-module.js",
 	"types": "dist/main-module.d.ts",
