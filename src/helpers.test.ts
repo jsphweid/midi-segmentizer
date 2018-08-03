@@ -4,10 +4,41 @@ import {
   getSimplePartitioningArray,
   getPartitioningArrayWithMax,
   sliceAndDice,
-  determineMeasureLength
+  determineMeasureLength,
+  getDurationOfNotes
 } from './helpers'
 
 describe('helpers', () => {
+  describe('getLengthOfNotes', () => {
+    it('should work in a basic use case', () => {
+      const notes = [{ duration: 1, time: 0 }] as Note[]
+      expect(getDurationOfNotes(notes)).toEqual(1)
+    })
+    it('should work with more than 1 note', () => {
+      const notes = [
+        { duration: 1, time: 0 },
+        { duration: 1, time: 3 }
+      ] as Note[]
+      expect(getDurationOfNotes(notes)).toEqual(4)
+    })
+    it('should work with a fairly sophisticated example', () => {
+      const notes = [
+        { duration: 1, time: 0 },
+        { duration: 0.5, time: 2 },
+        { duration: 0.111, time: 5 },
+        { duration: 3, time: 6 }
+      ] as Note[]
+      expect(getDurationOfNotes(notes)).toEqual(9)
+    })
+    it('should work with more than 1 note and offset', () => {
+      const notes = [
+        { duration: 1, time: 3 },
+        { duration: 1, time: 5 }
+      ] as Note[]
+      expect(getDurationOfNotes(notes)).toEqual(3)
+    })
+  })
+
   describe('sliceAndDice', () => {
     it('should slice basic example', () => {
       expect(sliceAndDice([1, 1, 1, 1, 1, 1], [0, 3])).toEqual([

@@ -2,7 +2,8 @@ import { Note } from 'midiconvert'
 import {
   getSimplePartitioningArray,
   getPartitioningArrayWithMax,
-  sliceAndDice
+  sliceAndDice,
+  getDurationOfNotes
 } from './helpers'
 
 export default class NotesProcessor {
@@ -28,6 +29,7 @@ export default class NotesProcessor {
   ): Note[][] => {
     let finalNotes: Note[][] = []
     noteGroupings.forEach((notes: Note[]) => {
+      // assumes notes are touching... bad strategy
       const lengthsOfEachNote = notes.map((note: Note) => note.duration)
       const recommendedSubdivisionIndicies = getPartitioningArrayWithMax(
         lengthsOfEachNote,
@@ -38,6 +40,27 @@ export default class NotesProcessor {
         ...sliceAndDice(notes, recommendedSubdivisionIndicies)
       ]
     })
+    return finalNotes
+  }
+
+  public static clumpTogether = (
+    noteGroupings: Note[][],
+    maxBreathSeconds: number
+  ) => {
+    let finalNotes: Note[][] = []
+    let tempNotes: Note[] = []
+    noteGroupings.forEach((notes: Note[]) => {
+      const optimisticNotes = [...tempNotes, ...notes]
+      if (getDurationOfNotes(optimisticNotes) < maxBreathSeconds) {
+        tempNotes = [...tempNotes, ...notes]
+      } else {
+        finalNotes.push(tempNotes)
+        tempNotes = notes
+      }
+    })
+    if (tempNotes.length) {
+      finalNotes.push(tempNotes)
+    }
     return finalNotes
   }
 }

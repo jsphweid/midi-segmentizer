@@ -84,6 +84,37 @@ describe('notes-processor', () => {
     })
   })
 
+  describe('clumpTogether', () => {
+    it('should fill up items to max breath if pieces are small', () => {
+      const notes = [
+        [{ time: 1, duration: 0.5 }],
+        [{ time: 2, duration: 0.5 }],
+        [{ time: 3, duration: 0.5 }],
+        [{ time: 4, duration: 1 }],
+        [{ time: 7, duration: 0.5 }],
+        [{ time: 8, duration: 0.5 }],
+        [{ time: 9, duration: 0.5 }],
+        [{ time: 10, duration: 1 }],
+        [{ time: 11, duration: 2 }, { time: 13, duration: 2 }]
+      ] as Note[][]
+      expect(NotesProcessor.clumpTogether(notes, 5)).toEqual([
+        [
+          { time: 1, duration: 0.5 },
+          { time: 2, duration: 0.5 },
+          { time: 3, duration: 0.5 },
+          { time: 4, duration: 1 }
+        ],
+        [
+          { time: 7, duration: 0.5 },
+          { time: 8, duration: 0.5 },
+          { time: 9, duration: 0.5 },
+          { time: 10, duration: 1 }
+        ],
+        [{ time: 11, duration: 2 }, { time: 13, duration: 2 }]
+      ])
+    })
+  })
+
   describe('subdivideUnderMaxBreath', () => {
     it('should partition notes further to almost nothing when max is so low', () => {
       const groupsOfNotes = [

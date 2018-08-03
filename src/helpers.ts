@@ -58,6 +58,13 @@ export const determineMeasureLength = (
   return timeSignature[0] * secondsPerBeat
 }
 
+export const getDurationOfNotes = (notes: Note[]): number => {
+  const startTime = notes[0].time
+  const lastNote = notes[notes.length - 1]
+  const { time, duration } = lastNote
+  return time + duration - startTime
+}
+
 export const base64ToBinary = (base64String: string): ArrayBuffer =>
   Buffer.from(base64String, 'base64').toString('binary') as any
 
@@ -74,12 +81,18 @@ export const processMidiFile = (midiFile: string): SegmentInfoType[] => {
   // segmentize
   tracks.forEach((track: Track) => {
     const notesGroupedOnRests = NotesProcessor.groupNotesOnRests(track.notes)
-    const finalDivisons = NotesProcessor.subdivideUnderMaxBreath(
+    const divisions = NotesProcessor.subdivideUnderMaxBreath(
       notesGroupedOnRests,
       MAX_BREATH_SECONDS
     )
 
-    finalDivisons.forEach((notes: Note[]) => {
+    // clump them together
+    const finalDivisions = NotesProcessor.clumpTogether(
+      divisions,
+      MAX_BREATH_SECONDS
+    )
+
+    finalDivisions.forEach((notes: Note[]) => {
       const firstNoteStartTime = notes[0].time
       const lastNoteStartTime = notes[notes.length - 1].time
       const offset =
