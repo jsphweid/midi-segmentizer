@@ -1,17 +1,15 @@
-import {
-  MIDI,
-  parse as parseMidi,
-  Track,
-  Note,
-  create as createMidi
-} from "midiconvert";
-import NotesProcessor from "./notes-processor";
-import { MAX_BREATH_SECONDS } from "./constants";
-import { SegmentInfoType } from "./main-module";
+import { Midi, Track } from "@tonejs/midi";
+import { Note } from "@tonejs/midi/dist/Note";
 
-export const getValidTracks = (midi: MIDI) => {
+import NotesProcessor from "./notes-processor";
+import { Segment } from ".";
+import SimpleMidi from "./simple-midi";
+
+export const MAX_BREATH_SECONDS = 4;
+
+export const getValidTracks = (midi: Midi) => {
   return midi.tracks.filter(
-    (track: Track) => track.notes.length > 0 && track.channelNumber >= 0
+    (track: Track) => track.notes.length > 0 && track.channel >= 0
   );
 };
 
@@ -68,15 +66,13 @@ export const getDurationOfNotes = (notes: Note[]): number => {
 export const base64ToBinary = (base64String: string): ArrayBuffer =>
   Buffer.from(base64String, "base64").toString("binary") as any;
 
-export const processMidiFile = (midiFile: string): SegmentInfoType[] => {
-  const midi: MIDI = parseMidi(base64ToBinary(midiFile));
-
-  const { timeSignature, bpm } = midi.header;
+export const processMidiFile = (midi: SimpleMidi): Segment[] => {
   const tracks: Track[] = getValidTracks(midi);
-
-  const measureLengthInSeconds = determineMeasureLength(bpm, timeSignature);
-
-  const segmentInfos: SegmentInfoType[] = [];
+  const measureLengthInSeconds = determineMeasureLength(
+    midi.simpleBpm,
+    midi.simpleTimeSignature
+  );
+  const segmentInfos: Segment[] = [];
 
   // segmentize
   tracks.forEach((track: Track) => {
@@ -98,27 +94,32 @@ export const processMidiFile = (midiFile: string): SegmentInfoType[] => {
       const offset =
         firstNoteStartTime - (firstNoteStartTime % measureLengthInSeconds);
 
-      const midiJson: MIDI = createMidi();
+      const midiJson = new Midi();
       midiJson.header = midi.header;
-      const midiTrack = midiJson.track();
-      midiTrack.channelNumber = track.channelNumber;
+      const midiTrack = midiJson.addTrack();
+      midiTrack.channel = track.channel;
       midiTrack.instrument = track.instrument;
-      midiTrack.instrumentNumber = track.instrumentNumber;
+
+      let lowestNote = Infinity;
+      let highestNote = -Infinity;
       notes.forEach((note: Note) => {
-        midiTrack.note(
-          note.midi,
-          note.time - offset,
-          note.duration,
-          note.velocity
-        );
+        lowestNote = Math.min(lowestNote, note.midi);
+        highestNote = Math.max(highestNote, note.midi);
+        midiTrack.addNote({
+          midi: note.midi,
+          duration: note.duration,
+          velocity: note.velocity,
+          time: note.time - offset
+        });
       });
 
       segmentInfos.push({
         offset,
         midiJson,
+        lowestNote,
+        highestNote,
         midiName: midi.header.name,
-        centerTime: (lastNoteStartTime - firstNoteStartTime) / 2,
-        difficulty: null
+        centerTime: (lastNoteStartTime - firstNoteStartTime) / 2
       });
     });
   });

@@ -7,8 +7,9 @@
 		"target": "es6",
 		"declaration": true,
 		"declarationDir": "./dist",
+		"strict": true,
 		"skipLibCheck": true,
-		"typeRoots": ["node_modules/@types", "local-types"]
+		"outDir": "dist"
 	},
 	"exclude": ["node_modules", "./src/**/*.test.ts"],
 	"include": ["./src/**/*"]

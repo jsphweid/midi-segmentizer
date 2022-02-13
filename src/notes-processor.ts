@@ -1,4 +1,5 @@
-import { Note } from "midiconvert";
+import { Note } from "@tonejs/midi/dist/Note";
+
 import {
   getSimplePartitioningArray,
   getPartitioningArrayWithMax,

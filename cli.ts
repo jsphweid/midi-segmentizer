@@ -1,8 +1,8 @@
-import ArgumentValidator from "./program-argument-validator";
-import { writeFileSync, readFileSync } from "fs";
-import { processMidiFile } from "./helpers";
-import { existsSync } from "fs";
 import { ParsedPath, parse } from "path";
+import { writeFileSync, readFileSync, existsSync } from "fs";
+
+import { processMidiFile } from "./helpers";
+import SimpleMidi from "./simple-midi";
 
 if (process.argv.length !== 4) {
   console.error(`
@@ -22,14 +22,10 @@ if (sourcePathObj.ext !== ".mid" || !existsSync(midiPath)) {
   process.exit(1);
 }
 
-// extract basic info
-const midiFile: string = readFileSync(midiPath, "base64");
+const simpleMidi = SimpleMidi.fromBase64(readFileSync(midiPath, "base64"));
+if (!simpleMidi) process.exit(1);
 
-// validate arguments
-const hasValidArguments = ArgumentValidator.hasValidArguments(midiFile);
-if (!hasValidArguments) process.exit(1);
-
-const segmentInfos = processMidiFile(midiFile);
+const segmentInfos = processMidiFile(simpleMidi);
 const outputFile: string = process.argv[3];
 
 writeFileSync(outputFile, JSON.stringify(segmentInfos));

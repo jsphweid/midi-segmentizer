@@ -1,5 +1,6 @@
-import NotesProcessor from "./notes-processor";
-import { Note } from "midiconvert";
+// import { Note } from "@tonejs/midi";
+import { Note } from "@tonejs/midi/src/Note";
+
 import {
   getSimplePartitioningArray,
   getPartitioningArrayWithMax,
