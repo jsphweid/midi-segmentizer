@@ -1,15 +1,15 @@
-import ArgumentValidator from './program-argument-validator'
-import { readFileSync } from 'fs'
+import ArgumentValidator from "./program-argument-validator";
+import { readFileSync } from "fs";
 
-describe('program-argument-validator', () => {
+describe("program-argument-validator", () => {
   beforeAll(() => {
-    console.error = str => null
-  })
+    console.error = str => null;
+  });
 
-  it('happy path is good', () => {
-    const midiFile = readFileSync('./test-midi-files/bwv772.mid', 'base64')
-    expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(true)
-  })
+  it("happy path is good", () => {
+    const midiFile = readFileSync("./test-midi-files/bwv772.mid", "base64");
+    expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(true);
+  });
 
   // it('if third arg is midi file but junk, it fails', () => {
   // 	const midiFile = readFileSync('./test-midi-files/corruptMidi.mid', 'base64')
@@ -30,4 +30,4 @@ describe('program-argument-validator', () => {
   // 	const midiFile = readFileSync('./test-midi-files/7-8time.mid', 'base64')
   // 	expect(ArgumentValidator.hasValidArguments(midiFile)).toBe(false)
   // })
-})
+});

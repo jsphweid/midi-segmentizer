@@ -8,7 +8,7 @@
     "start": "webpack --progress --colors --watch",
     "build": "webpack --progress --colors",
     "prepublish": "npm run build",
-    "prettier": "prettier --config .prettierrc --write 'src/**/*.{js,ts}'",
+    "prettier": "prettier --config .prettierrc --write 'src/**/*.{js,ts,json}'",
     "release:alpha": "npm run test && npm version prerelease && npm publish --tag=alpha",
     "release:major": "npm run test && npm version major && npm publish",
     "release:minor": "npm run test && npm version minor && npm publish",
