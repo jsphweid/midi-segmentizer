@@ -1,5 +1,6 @@
+import { Note } from "@tonejs/midi/dist/Note";
+
 import NotesProcessor from "./notes-processor";
-import { Note } from "midiconvert";
 
 describe("notes-processor", () => {
   describe("getTimeDifferenceArray", () => {
