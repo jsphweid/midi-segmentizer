@@ -48,13 +48,7 @@ export const sliceAndDice = <T>(
   return ret;
 };
 
-export const determineMeasureLength = (
-  bpm: number,
-  timeSignature: number[]
-): number => {
-  const secondsPerBeat = 1 / (bpm / 60);
-  return timeSignature[0] * secondsPerBeat;
-};
+export const getBeatLength = (bpm: number) => 1 / (bpm / 60);
 
 export const getDurationOfNotes = (notes: Note[]): number => {
   const startTime = notes[0].time;
@@ -68,10 +62,7 @@ export const base64ToBinary = (base64String: string): ArrayBuffer =>
 
 export const processMidiFile = (midi: SimpleMidi): Segment[] => {
   const tracks: Track[] = getValidTracks(midi);
-  const measureLengthInSeconds = determineMeasureLength(
-    midi.simpleBpm,
-    midi.simpleTimeSignature
-  );
+  const beatLength = getBeatLength(midi.simpleBpm);
   const segmentInfos: Segment[] = [];
 
   // segmentize
@@ -91,8 +82,7 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
     finalDivisions.forEach((notes: Note[]) => {
       const firstNoteStartTime = notes[0].time;
       const lastNoteStartTime = notes[notes.length - 1].time;
-      const offset =
-        firstNoteStartTime - (firstNoteStartTime % measureLengthInSeconds);
+      const offset = firstNoteStartTime - (firstNoteStartTime % beatLength);
 
       const midiJson = new Midi();
       midiJson.header = midi.header;
