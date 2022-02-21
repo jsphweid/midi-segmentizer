@@ -5,8 +5,7 @@ import {
   getSimplePartitioningArray,
   getPartitioningArrayWithMax,
   sliceAndDice,
-  determineMeasureLength,
-  getDurationOfNotes
+  getDurationOfNotes,
 } from "./helpers";
 
 describe("helpers", () => {
@@ -18,7 +17,7 @@ describe("helpers", () => {
     it("should work with more than 1 note", () => {
       const notes = [
         { duration: 1, time: 0 },
-        { duration: 1, time: 3 }
+        { duration: 1, time: 3 },
       ] as Note[];
       expect(getDurationOfNotes(notes)).toEqual(4);
     });
@@ -27,14 +26,14 @@ describe("helpers", () => {
         { duration: 1, time: 0 },
         { duration: 0.5, time: 2 },
         { duration: 0.111, time: 5 },
-        { duration: 3, time: 6 }
+        { duration: 3, time: 6 },
       ] as Note[];
       expect(getDurationOfNotes(notes)).toEqual(9);
     });
     it("should work with more than 1 note and offset", () => {
       const notes = [
         { duration: 1, time: 3 },
-        { duration: 1, time: 5 }
+        { duration: 1, time: 5 },
       ] as Note[];
       expect(getDurationOfNotes(notes)).toEqual(3);
     });
@@ -44,7 +43,7 @@ describe("helpers", () => {
     it("should slice basic example", () => {
       expect(sliceAndDice([1, 1, 1, 1, 1, 1], [0, 3])).toEqual([
         [1, 1, 1],
-        [1, 1, 1]
+        [1, 1, 1],
       ]);
     });
     it("should slice and dice a more complicated example", () => {
@@ -125,28 +124,6 @@ describe("helpers", () => {
     it("should divide appropriately when faced with a large starting number", () => {
       const arr = [5, 1];
       expect(getPartitioningArrayWithMax(arr, 2)).toEqual([0, 1]);
-    });
-  });
-
-  describe("determineMeasureLength", () => {
-    it("should determine the correct bpm with a basic 4/4 measure at 60bpm", () => {
-      expect(determineMeasureLength(60, [4, 4])).toEqual(4);
-    });
-
-    it("should determine the correct bpm with a basic 3/4 measure at 60bpm", () => {
-      expect(determineMeasureLength(60, [3, 4])).toEqual(3);
-    });
-
-    it("should determine the correct bpm with a basic 6/4 measure at 60bpm", () => {
-      expect(determineMeasureLength(60, [6, 4])).toEqual(6);
-    });
-
-    it("should determine the correct bpm with a basic 4/4 measure at 120bpm", () => {
-      expect(determineMeasureLength(120, [4, 4])).toEqual(2);
-    });
-
-    it("should determine the correct bpm with a basic 3/4 measure at 120bpm", () => {
-      expect(determineMeasureLength(120, [3, 4])).toEqual(1.5);
     });
   });
 });

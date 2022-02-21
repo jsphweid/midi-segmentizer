@@ -1,13 +1,13 @@
 {
   "name": "midi-segmentizer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "break a simple midi file into monophonic segments",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "parcel serve src/index.html --port 1234",
     "build": "rm -rf dist && tsc",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "prettier": "prettier --config .prettierrc --write 'src/**/*.{js,ts,json}'",
     "release:alpha": "npm run test && npm version prerelease && npm publish --tag=alpha",
     "release:major": "npm run test && npm version major && npm publish",
