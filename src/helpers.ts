@@ -109,7 +109,7 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
           midi: note.midi,
           duration: note.duration,
           velocity: note.velocity,
-          time: note.time - offset
+          time: note.time - offset,
         });
       });
 
@@ -119,7 +119,7 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
         lowestNote,
         highestNote,
         midiName: midi.header.name,
-        centerTime: (lastNoteStartTime - firstNoteStartTime) / 2
+        centerTime: (lastNoteStartTime - firstNoteStartTime) / 2,
       });
     });
   });

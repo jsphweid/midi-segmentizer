@@ -9,7 +9,8 @@
 		"declarationDir": "./dist",
 		"strict": true,
 		"skipLibCheck": true,
-		"outDir": "dist"
+		"outDir": "dist",
+		"jsx": "react"
 	},
 	"exclude": ["node_modules", "./src/**/*.test.ts"],
 	"include": ["./src/**/*"]
