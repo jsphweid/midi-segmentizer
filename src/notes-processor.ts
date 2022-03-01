@@ -52,7 +52,7 @@ export default class NotesProcessor {
     let tempNotes: Note[] = [];
     noteGroupings.forEach((notes: Note[]) => {
       const optimisticNotes = [...tempNotes, ...notes];
-      if (getDurationOfNotes(optimisticNotes) < maxBreathSeconds) {
+      if (getDurationOfNotes(optimisticNotes) <= maxBreathSeconds) {
         tempNotes = [...tempNotes, ...notes];
       } else {
         finalNotes.push(tempNotes);
