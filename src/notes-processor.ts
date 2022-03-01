@@ -4,7 +4,7 @@ import {
   getSimplePartitioningArray,
   getPartitioningArrayWithMax,
   sliceAndDice,
-  getDurationOfNotes
+  getDurationOfNotes,
 } from "./helpers";
 
 export default class NotesProcessor {
@@ -38,7 +38,7 @@ export default class NotesProcessor {
       );
       finalNotes = [
         ...finalNotes,
-        ...sliceAndDice(notes, recommendedSubdivisionIndicies)
+        ...sliceAndDice(notes, recommendedSubdivisionIndicies),
       ];
     });
     return finalNotes;

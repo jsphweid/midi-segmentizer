@@ -23,9 +23,9 @@ function isPolyphonicMidiFile(midi: Midi): boolean {
   }
 
   return getValidTracks(midi)
-    .map(track => track.notes)
+    .map((track) => track.notes)
     .map(noteSequenceIsPolyphonic)
-    .some(b => !!b);
+    .some((b) => !!b);
 }
 
 class SimpleMidi extends Midi {
