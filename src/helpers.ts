@@ -1,8 +1,8 @@
 import { Midi, Track } from "@tonejs/midi";
-import { Note } from "@tonejs/midi/dist/Note";
+import { Note as LibNote } from "@tonejs/midi/dist/Note";
 
 import NotesProcessor from "./notes-processor";
-import { Segment } from ".";
+import { Note, Segment } from ".";
 import SimpleMidi from "./simple-midi";
 
 export const MAX_BREATH_SECONDS = 4;
@@ -79,37 +79,28 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
       MAX_BREATH_SECONDS
     );
 
-    finalDivisions.forEach((notes: Note[]) => {
+    finalDivisions.forEach((notes: LibNote[]) => {
       const firstNoteStartTime = notes[0].time;
-      const lastNoteStartTime = notes[notes.length - 1].time;
       const offset = firstNoteStartTime - (firstNoteStartTime % beatLength);
-
-      const midiJson = new Midi();
-      midiJson.header = midi.header;
-      const midiTrack = midiJson.addTrack();
-      midiTrack.channel = track.channel;
-      midiTrack.instrument = track.instrument;
 
       let lowestNote = Infinity;
       let highestNote = -Infinity;
-      notes.forEach((note: Note) => {
+      const finalNotes: Note[] = notes.map((note: LibNote) => {
         lowestNote = Math.min(lowestNote, note.midi);
         highestNote = Math.max(highestNote, note.midi);
-        midiTrack.addNote({
+        return {
           midi: note.midi,
           duration: note.duration,
           velocity: note.velocity,
           time: note.time - offset,
-        });
+        };
       });
 
       segmentInfos.push({
         offset,
-        midiJson,
+        notes: finalNotes,
         lowestNote,
         highestNote,
-        midiName: midi.header.name,
-        centerTime: (lastNoteStartTime - firstNoteStartTime) / 2,
       });
     });
   });

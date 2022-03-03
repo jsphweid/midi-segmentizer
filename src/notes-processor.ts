@@ -1,4 +1,4 @@
-import { Note } from "@tonejs/midi/dist/Note";
+import { Note as LibNote } from "@tonejs/midi/dist/Note";
 
 import {
   getSimplePartitioningArray,
@@ -8,7 +8,7 @@ import {
 } from "./helpers";
 
 export default class NotesProcessor {
-  public static getTimeDifferenceArray = (notes: Note[]): number[] => {
+  public static getTimeDifferenceArray = (notes: LibNote[]): number[] => {
     const diffArray: number[] = [0];
     for (let i = 1; i < notes.length; i++) {
       const previousNote = notes[i - 1];
@@ -18,20 +18,20 @@ export default class NotesProcessor {
     return diffArray;
   };
 
-  public static groupNotesOnRests = (notes: Note[]): Note[][] => {
+  public static groupNotesOnRests = (notes: LibNote[]): LibNote[][] => {
     const diffArray = NotesProcessor.getTimeDifferenceArray(notes);
     const partitioningArray = getSimplePartitioningArray(diffArray);
     return sliceAndDice(notes, partitioningArray);
   };
 
   public static subdivideUnderMaxBreath = (
-    noteGroupings: Note[][],
+    noteGroupings: LibNote[][],
     maxBreathSeconds: number
-  ): Note[][] => {
-    let finalNotes: Note[][] = [];
-    noteGroupings.forEach((notes: Note[]) => {
+  ): LibNote[][] => {
+    let finalNotes: LibNote[][] = [];
+    noteGroupings.forEach((notes: LibNote[]) => {
       // assumes notes are touching... bad strategy
-      const lengthsOfEachNote = notes.map((note: Note) => note.duration);
+      const lengthsOfEachNote = notes.map((note: LibNote) => note.duration);
       const recommendedSubdivisionIndicies = getPartitioningArrayWithMax(
         lengthsOfEachNote,
         maxBreathSeconds
@@ -45,12 +45,12 @@ export default class NotesProcessor {
   };
 
   public static clumpTogether = (
-    noteGroupings: Note[][],
+    noteGroupings: LibNote[][],
     maxBreathSeconds: number
   ) => {
-    let finalNotes: Note[][] = [];
-    let tempNotes: Note[] = [];
-    noteGroupings.forEach((notes: Note[]) => {
+    let finalNotes: LibNote[][] = [];
+    let tempNotes: LibNote[] = [];
+    noteGroupings.forEach((notes: LibNote[]) => {
       const optimisticNotes = [...tempNotes, ...notes];
       if (getDurationOfNotes(optimisticNotes) <= maxBreathSeconds) {
         tempNotes = [...tempNotes, ...notes];

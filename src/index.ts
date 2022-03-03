@@ -1,15 +1,19 @@
-import { Midi } from "@tonejs/midi";
-
 import { processMidiFile } from "./helpers";
 import SimpleMidi from "./simple-midi";
 
+export interface Note {
+  time: number;
+  midi: number;
+  duration: number;
+  velocity: number;
+  lyric?: string | null;
+}
+
 export interface Segment {
   offset: number;
-  midiJson: Midi;
-  midiName: string;
+  notes: Note[];
   highestNote: number;
   lowestNote: number;
-  centerTime: number;
   difficulty?: number | null;
 }
 
