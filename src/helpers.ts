@@ -13,6 +13,14 @@ export const getValidTracks = (midi: Midi) => {
   );
 };
 
+export const shiftMidi = (midi: Midi, amount: number) => {
+  for (const track of midi.tracks) {
+    for (const note of track.notes) {
+      note.time += amount;
+    }
+  }
+};
+
 export const getSimplePartitioningArray = (arr: number[]): number[] => {
   return arr
     .map((num: number, index: number) => (index === 0 || num !== 0 ? index : 0))
@@ -61,8 +69,11 @@ export const base64ToBinary = (base64String: string): ArrayBuffer =>
   Buffer.from(base64String, "base64").toString("binary") as any;
 
 export const processMidiFile = (midi: SimpleMidi): Segment[] => {
-  const tracks: Track[] = getValidTracks(midi);
   const beatLength = getBeatLength(midi.simpleBpm);
+  const shift = beatLength * 2;
+  shiftMidi(midi, shift);
+
+  const tracks: Track[] = getValidTracks(midi);
   const segmentInfos: Segment[] = [];
 
   // segmentize
@@ -81,7 +92,9 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
 
     finalDivisions.forEach((notes: LibNote[]) => {
       const firstNoteStartTime = notes[0].time;
-      const offset = firstNoteStartTime - (firstNoteStartTime % beatLength);
+      const minimumOffset =
+        firstNoteStartTime - (firstNoteStartTime % beatLength);
+      const offset = minimumOffset - shift;
 
       let lowestNote = Infinity;
       let highestNote = -Infinity;
