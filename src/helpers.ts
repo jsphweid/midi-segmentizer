@@ -97,6 +97,7 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
       });
 
       segmentInfos.push({
+        bpm: midi.simpleBpm,
         offset,
         notes: finalNotes,
         lowestNote,

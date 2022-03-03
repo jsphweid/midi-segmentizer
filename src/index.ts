@@ -11,6 +11,7 @@ export interface Note {
 
 export interface Segment {
   offset: number;
+  bpm: number;
   notes: Note[];
   highestNote: number;
   lowestNote: number;

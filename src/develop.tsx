@@ -1,10 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Segment, segmentizeMidi } from ".";
-import { Note } from "@tonejs/midi/dist/Note";
+import { Note, Segment, segmentizeMidi } from ".";
 import { sample } from "./sample";
-import { randomInt } from "crypto";
 
 type Canvas = CanvasRenderingContext2D;
 
@@ -58,8 +56,7 @@ function renderBox(
 }
 
 function renderSegment(ctx: Canvas, segment: Segment, w: number, h: number) {
-  const notes = segment.midiJson.tracks[0].notes;
-  const offset = segment.offset;
+  const { notes, offset } = segment;
   const col = getRandomColor();
   let hi = Infinity;
   let lo = -Infinity;
