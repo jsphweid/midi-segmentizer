@@ -5,7 +5,7 @@ import NotesProcessor from "./notes-processor";
 import { Note, Segment } from ".";
 import SimpleMidi from "./simple-midi";
 
-export const MAX_BREATH_SECONDS = 4;
+export const MAX_BREATH_SECONDS = 7;
 
 export const getValidTracks = (midi: Midi) => {
   return midi.tracks.filter(
