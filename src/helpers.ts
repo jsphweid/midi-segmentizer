@@ -91,7 +91,7 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
     );
 
     finalDivisions.forEach((notes: LibNote[]) => {
-      const offset = getSegmentOffset(notes, beatLength, shift);
+      const offset = getSegmentOffset(notes[0].time, beatLength, shift);
 
       let lowestNote = Infinity;
       let highestNote = -Infinity;
