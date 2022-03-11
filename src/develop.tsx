@@ -335,6 +335,18 @@ function App() {
     );
   }
 
+  function handleDownload() {
+    var data = { a: 1, b: 2, c: 3 };
+    var json = JSON.stringify(data);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.download = "backup.json";
+    a.href = url;
+    a.textContent = "Download backup.json";
+  }
+
   return (
     <div>
       <div style={{ position: "fixed" }}>
@@ -344,6 +356,7 @@ function App() {
           onChange={(e) => handleFileUpload(e.target.files![0])}
         />
         <button onClick={handleSaveSegment}>save segment</button>
+        <button onClick={handleDownload}>download</button>
       </div>
       <canvas
         onMouseDown={handleMouseDown}
