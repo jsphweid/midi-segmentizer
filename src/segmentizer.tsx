@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { Note, Segment } from ".";
+import { Note, Segment, segmentizeMidi } from ".";
 import {
   base64ToArrayBuffer,
   getBeatLength,
@@ -371,10 +371,33 @@ function Segmentizer(props: SegmentizerProps) {
     );
   }
 
+  function handleLucky() {
+    const segments = segmentizeMidi(props.data);
+    if (!segments) {
+      alert("Midi file isn't simple enough to auto-segment...");
+      return;
+    }
+    setNotes([]);
+    setSegments(
+      segments.map((segment) => ({
+        id: uuidv4(),
+        color: getRandomColor(),
+        offset: segment.offset,
+        notes: segment.notes
+          .map((note) => ({
+            ...note,
+            offset: segment.offset,
+          }))
+          .map(buildNote),
+      }))
+    );
+  }
+
   return (
     <div>
       <div style={{ position: "fixed" }}>
         <button onClick={handleSaveSegment}>make segment</button>
+        <button onClick={handleLucky}>i'm feeling lucky</button>
         <button disabled={!segments.length} onClick={handleSave}>
           save segments
         </button>
