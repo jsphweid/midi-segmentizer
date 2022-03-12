@@ -10,6 +10,7 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
+    "esModuleInterop": true,
     "jsx": "react"
   },
   "exclude": ["node_modules", "./src/**/*.test.ts", "./src/develop.tsx"],

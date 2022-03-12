@@ -91,10 +91,7 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
     );
 
     finalDivisions.forEach((notes: LibNote[]) => {
-      const firstNoteStartTime = notes[0].time;
-      const minimumOffset =
-        firstNoteStartTime - (firstNoteStartTime % beatLength);
-      const offset = minimumOffset - shift;
+      const offset = getSegmentOffset(notes[0].time, beatLength, shift);
 
       let lowestNote = Infinity;
       let highestNote = -Infinity;
@@ -121,3 +118,23 @@ export const processMidiFile = (midi: SimpleMidi): Segment[] => {
 
   return segmentInfos;
 };
+
+export function getSegmentOffset(
+  firstNoteStart: number,
+  beatLength: number,
+  shift: number
+) {
+  const minimumOffset = firstNoteStart - (firstNoteStart % beatLength);
+  const offset = minimumOffset - shift;
+  return offset;
+}
+
+export function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binary_string = window.atob(base64);
+  const len = binary_string.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}

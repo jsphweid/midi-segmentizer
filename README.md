@@ -1,13 +1,11 @@
 # midi-segmentizer
 
-- break a midi file into monophonic segments
-- assume constant tempo and time signature for MVP
+React Component and/or helper functions to help you segment a piece of midi.
 
 # todo
 
+- this repo used to be somewhat coherent but now it's a bit all over the place... think about high level organization more
 - determine output => experiement with midi, musicXML...
-- make PR for midiconvert types - controlChanges should be on Track type... MIDI type...
-- write tests to prevent files with tempo changes and mixed meter
 
 idea:
 
