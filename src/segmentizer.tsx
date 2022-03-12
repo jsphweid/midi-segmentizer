@@ -172,7 +172,7 @@ interface SegmentizerProps {
 
 function Segmentizer(props: SegmentizerProps) {
   const ref = useRef(null);
-  const [height, setHeight] = useState(800);
+  const [height] = useState(800); // TODO: in the future this could be dynamic?
   const [width, setWidth] = useState(2000);
   const [notes, setNotes] = useState<DrawableNote[]>([]);
   const [bpm, setBpm] = useState<number | null>();
