@@ -10,11 +10,12 @@ import {
 } from "./helpers";
 import Midi from "./midi";
 
-const X_EXPAND = 100;
+const X_EXPAND = 200;
 
 type Coord = { x: number; y: number };
 
 interface DrawableNote extends Note, Coord {
+  id: string;
   width: number;
   height: number;
   topLeft: Coord;
@@ -24,7 +25,7 @@ interface DrawableNote extends Note, Coord {
 }
 
 function buildNote(
-  note: Note & { selected?: boolean; offset?: number }
+  note: Note & { selected?: boolean; offset?: number; id: string }
 ): DrawableNote {
   // NOTE: offset is a unit of time
   const height = 1000 / 127;
@@ -94,6 +95,12 @@ function renderNote(ctx: Canvas, note: DrawableNote, color?: string) {
     ctx.fillStyle = color ?? "#000000";
     ctx.fill();
   }
+
+  if (note.lyric) {
+    ctx.fillStyle = "#000000";
+    ctx.font = "30px Arial";
+    ctx.fillText(note.lyric, note.x, note.y, note.width);
+  }
 }
 
 function renderBox(
@@ -144,8 +151,13 @@ function clear(ctx: Canvas, w: number, h: number) {
 
 export function useKeyPress(targetKey: string): boolean {
   const [keyPressed, setKeyPressed] = useState(false);
-  function downHandler({ key }: any): void {
-    if (key === targetKey) {
+  function downHandler(evt: any): void {
+    // special case for tab key in this application...
+    if (evt.key === "Tab") {
+      evt.preventDefault();
+    }
+
+    if (evt.key === targetKey) {
       setKeyPressed(true);
     }
   }
@@ -175,6 +187,8 @@ function Segmentizer(props: SegmentizerProps) {
   const [height] = useState(800); // TODO: in the future this could be dynamic?
   const [width, setWidth] = useState(2000);
   const [notes, setNotes] = useState<DrawableNote[]>([]);
+  const [addingLyric, setAddingLyric] = useState<string | null>(null);
+  const [lyric, setLyric] = useState("");
   const [bpm, setBpm] = useState<number | null>();
   const [bars, setBars] = useState<number[]>([]);
   const [segments, setSegments] = useState<DrawableSegment[]>([]);
@@ -182,11 +196,44 @@ function Segmentizer(props: SegmentizerProps) {
   const [beatLength, setBeatLength] = useState<number | null>(null);
   const [shift, setShift] = useState<number | null>(null);
   const escapePressed = useKeyPress("Escape");
+  const enterPressed = useKeyPress("Enter");
+  const tabPressed = useKeyPress("Tab");
   const tickPressed = useKeyPress("`");
+
+  useEffect(() => {
+    if (enterPressed) {
+      handleSaveLyric();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enterPressed]);
+
+  useEffect(() => {
+    if (tabPressed) {
+      const lastNote = handleSaveLyric();
+
+      // find next lyric
+      if (lastNote) {
+        const possibleNextNotes = notes.filter((n) => n.time > lastNote.time);
+        const score = (note: DrawableNote) => {
+          const midiDistance = Math.abs(note.midi - lastNote.midi) || 1;
+          const timeDifference = Math.abs(note.time - lastNote.time) * 50;
+          return midiDistance + timeDifference;
+        };
+        if (possibleNextNotes.length) {
+          const nextNotes = possibleNextNotes.sort((a, b) =>
+            score(b) > score(a) ? 1 : -1
+          );
+          setAddingLyric(nextNotes[nextNotes.length - 1].id);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabPressed]);
 
   useEffect(() => {
     if (escapePressed) {
       handleClearSelection();
+      setAddingLyric(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [escapePressed]);
@@ -208,6 +255,7 @@ function Segmentizer(props: SegmentizerProps) {
         shiftMidi(midi, _shift);
         const notes = midi
           .getAllNotes()
+          .map((n) => ({ ...n, id: uuidv4() }))
           .map(buildNote)
           .sort((a, b) => (b.time > a.time ? -1 : 1));
         const maxWidth = Math.max(...notes.map((n) => n.x)) + 300;
@@ -225,6 +273,26 @@ function Segmentizer(props: SegmentizerProps) {
     }
   }, [props.data, ref]);
 
+  function handleSaveLyric() {
+    const tempNotes: DrawableNote[] = [];
+    let res: DrawableNote | null = null;
+    if (addingLyric) {
+      for (const note of notes) {
+        if (note.id === addingLyric) {
+          tempNotes.push({ ...note, lyric: lyric || undefined });
+          res = note;
+        } else {
+          tempNotes.push(note);
+        }
+      }
+
+      setNotes(tempNotes);
+      setLyric("");
+      setAddingLyric(null);
+    }
+    return res;
+  }
+
   function handleMouseDown(evt: any) {
     if (ref.current) {
       const rect = (ref.current as any).getBoundingClientRect();
@@ -235,12 +303,13 @@ function Segmentizer(props: SegmentizerProps) {
   }
 
   function handleClearSelection() {
-    setNotes(
-      notes.map((note) => ({
-        ...note,
-        selected: false,
-      }))
-    );
+    const tempNotes = [];
+    for (const note of notes) {
+      tempNotes.push(
+        note.selected ? { ...note, selected: false, lyric: undefined } : note
+      );
+    }
+    setNotes(tempNotes);
   }
 
   function handleSaveSegment() {
@@ -266,6 +335,25 @@ function Segmentizer(props: SegmentizerProps) {
         ...segments,
         { id: uuidv4(), color, notes: shiftedNotes, offset },
       ]);
+    }
+  }
+
+  function handleDoubleClick(evt: any) {
+    if (ref.current) {
+      const rect = (ref.current as any).getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top;
+      notes.forEach((note) => {
+        const { x: noteX, y: noteY, width, height } = note;
+        if (
+          x >= noteX &&
+          x <= noteX + width &&
+          y >= noteY &&
+          y <= noteY + height
+        ) {
+          setAddingLyric(note.id);
+        }
+      });
     }
   }
 
@@ -357,7 +445,7 @@ function Segmentizer(props: SegmentizerProps) {
             midi: note.midi,
             duration: note.duration,
             velocity: 1,
-            lyric: null, // TODO: fix
+            lyric: note.lyric,
           });
         }
         return {
@@ -388,6 +476,7 @@ function Segmentizer(props: SegmentizerProps) {
             ...note,
             offset: segment.offset,
           }))
+          .map((n) => ({ ...n, id: uuidv4() }))
           .map(buildNote),
       }))
     );
@@ -401,10 +490,19 @@ function Segmentizer(props: SegmentizerProps) {
         <button disabled={!segments.length} onClick={handleSave}>
           save segments
         </button>
+        {addingLyric ? (
+          <input
+            autoFocus
+            value={lyric}
+            onChange={(e) => setLyric(e.target.value)}
+            tabIndex={1}
+          />
+        ) : null}
       </div>
       <canvas
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onDoubleClick={handleDoubleClick}
         id="react-midiVisualizer-canvas"
         ref={ref}
         height={height}
