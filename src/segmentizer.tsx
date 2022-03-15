@@ -276,10 +276,10 @@ function Segmentizer(props: SegmentizerProps) {
   function handleSaveLyric() {
     const tempNotes: DrawableNote[] = [];
     let res: DrawableNote | null = null;
-    if (addingLyric && lyric) {
+    if (addingLyric) {
       for (const note of notes) {
         if (note.id === addingLyric) {
-          tempNotes.push({ ...note, lyric });
+          tempNotes.push({ ...note, lyric: lyric || undefined });
           res = note;
         } else {
           tempNotes.push(note);
@@ -445,7 +445,7 @@ function Segmentizer(props: SegmentizerProps) {
             midi: note.midi,
             duration: note.duration,
             velocity: 1,
-            lyric: null, // TODO: fix
+            lyric: note.lyric,
           });
         }
         return {
